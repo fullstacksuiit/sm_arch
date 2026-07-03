@@ -121,13 +121,23 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 /* Transparent PNG — the gold signature renders true colour over the hero.
    Height scales with the viewport so the signature reads clearly on every screen. */
 .nav__logo-img {
-  height: clamp(46px, 4.5vw, 64px); width: auto; display: block;
+  height: clamp(60px, 6vw, 88px); width: auto; display: block;
   transition: height .5s var(--ease), opacity .4s var(--ease);
-  /* Subtle contrast/saturation bump so the gold signature reads crisp and
-     confident without smudging the raster strokes. */
-  filter: contrast(1.12) saturate(1.08);
+  /* The signature PNG has very thin strokes. Stacking tight gold drop-shadows
+     around the marks dilates them so the writing reads bold and legible, while
+     the contrast/saturation bump keeps the gold crisp. */
+  filter:
+    contrast(1.28) saturate(1.15)
+    drop-shadow(0.6px 0 0 var(--gold-soft))
+    drop-shadow(-0.6px 0 0 var(--gold-soft))
+    drop-shadow(0 0.6px 0 var(--gold-soft))
+    drop-shadow(0 -0.6px 0 var(--gold-soft))
+    drop-shadow(0.6px 0.6px 0 var(--gold))
+    drop-shadow(-0.6px -0.6px 0 var(--gold))
+    drop-shadow(0.6px -0.6px 0 var(--gold))
+    drop-shadow(-0.6px 0.6px 0 var(--gold));
 }
-.nav.scrolled .nav__logo-img { height: clamp(40px, 3.6vw, 52px); }
+.nav.scrolled .nav__logo-img { height: clamp(52px, 4.8vw, 70px); }
 .nav__logo:hover .nav__logo-img { opacity: 0.82; }
 .nav__links { display: flex; gap: 2.4rem; }
 .nav__links a {
@@ -782,6 +792,62 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   background-repeat: no-repeat;
 }
 /* JS drives the img filter, sky gradient and sun position from the visitor's real time of day */
+
+/* ---------- Live weather — real conditions at the visitor's location ---------- */
+/* Precipitation canvas (rain/snow) sits above the scene; overcast/fog is a tinted wash */
+.hero__precip {
+  position: absolute; inset: 0; width: 100%; height: 100%;
+  pointer-events: none; opacity: 0; transition: opacity 1.2s ease;
+  /* The scene is an interior — rain across the whole room reads as if it's
+     falling indoors. Clip the precipitation to the window on the right so the
+     weather is only visible *outside*, through the glass. Coordinates track the
+     window as the object-fit:cover image sits on a desktop hero. */
+  clip-path: polygon(81% 7%, 100% 7%, 100% 92%, 81% 92%);
+}
+/* On narrow/portrait viewports the cover crop shifts the window; widen the
+   clip so rain still lands over the glass rather than the wall. */
+@media (max-width: 720px) {
+  .hero__precip { clip-path: polygon(74% 10%, 100% 10%, 100% 88%, 74% 88%); }
+}
+.hero__precip.is-active { opacity: 1; }
+.hero__weather {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0; transition: opacity 1.6s ease, background .6s linear;
+  mix-blend-mode: multiply;
+}
+.hero__weather.is-active { opacity: 1; }
+/* Clear skies: warm daylight pours in through the right-hand window and rakes
+   across the room. A soft glow sits on the glass; an angled shaft fans inward.
+   Uses screen blend so it brightens the scene like real sun rather than tinting. */
+.hero__sunbeam {
+  position: absolute; inset: 0; pointer-events: none;
+  opacity: 0; transition: opacity 1.8s ease;
+  mix-blend-mode: screen;
+  background:
+    radial-gradient(50% 62% at 92% 42%, rgba(255,232,178,0.62), rgba(255,222,158,0.16) 42%, transparent 70%),
+    linear-gradient(252deg,
+      rgba(255,231,175,0.42) 0%,
+      rgba(255,224,162,0.20) 20%,
+      rgba(255,220,155,0.06) 38%,
+      transparent 52%);
+}
+.hero__sunbeam.is-active { opacity: 1; animation: sunbreathe 7s var(--ease) infinite; }
+@keyframes sunbreathe {
+  0%, 100% { opacity: 0.86; }
+  50%      { opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero__sunbeam.is-active { animation: none; }
+}
+/* Overcast: a cool grey wash that flattens the light */
+.hero__weather[data-sky="overcast"] {
+  background: radial-gradient(120% 90% at 50% 0%, rgba(150,158,170,0.42), rgba(60,66,78,0.30) 70%);
+}
+/* Fog: soft luminous haze drifting up from below */
+.hero__weather[data-sky="fog"] {
+  mix-blend-mode: screen;
+  background: linear-gradient(to top, rgba(214,218,224,0.55), rgba(214,218,224,0.10) 55%, transparent 80%);
+}
 
 /* ---------- 2 · Blueprint draws itself ---------- */
 .blueprint { padding: clamp(4rem, 10vh, 8rem) var(--gutter); }

@@ -257,6 +257,178 @@
     setInterval(tick, 30000); // refresh every 30s so the clock and light stay live
   }
 
+  /* ---------- 1b · Live weather — real conditions outside the visitor's window ---------- */
+  /* Detects the visitor's city (IP, upgraded by GPS if already granted), asks Open-Meteo
+     what the sky is doing there right now, and lets it rain/snow/fog over the hero scene —
+     as if you were standing inside looking out at their actual weather. */
+  const precip = document.getElementById("heroPrecip");
+  const weatherEl = document.getElementById("heroWeather");
+  const sunbeamEl = document.getElementById("heroSunbeam");
+  if (precip && weatherEl) {
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ctx = precip.getContext("2d");
+    let raf = 0, drops = [], mode = null, dpr = 1;
+
+    // Open-Meteo weather codes → what the sky is doing
+    // https://open-meteo.com/en/docs  (WMO code table)
+    const classify = (code) => {
+      if ([51,53,55,56,57,61,63,65,66,67,80,81,82].includes(code)) return "rain";
+      if ([95,96,99].includes(code)) return "storm";
+      if ([71,73,75,77,85,86].includes(code)) return "snow";
+      if ([45,48].includes(code)) return "fog";
+      if ([1,2,3].includes(code)) return "overcast";
+      return "clear";
+    };
+    const labelFor = { rain: "Raining", storm: "Storming", snow: "Snowing", fog: "Foggy", overcast: "Overcast", clear: "Clear skies" };
+
+    const resize = () => {
+      dpr = Math.min(window.devicePixelRatio || 1, 2);
+      precip.width = precip.clientWidth * dpr;
+      precip.height = precip.clientHeight * dpr;
+    };
+
+    // Seed particles for the active mode (rain streaks or snow flakes)
+    const seed = (kind) => {
+      const w = precip.width, h = precip.height;
+      const density = kind === "snow" ? 0.00009 : 0.00016; // per px²
+      const n = Math.round(w * h * density);
+      drops = Array.from({ length: n }, () => ({
+        x: Math.random() * w,
+        y: Math.random() * h,
+        z: 0.4 + Math.random() * 0.9,          // depth → speed & size
+        len: kind === "snow" ? 0 : (10 + Math.random() * 18) * dpr,
+        sway: Math.random() * Math.PI * 2,
+      }));
+    };
+
+    const draw = () => {
+      const w = precip.width, h = precip.height;
+      ctx.clearRect(0, 0, w, h);
+      const heavy = mode === "storm";
+      if (mode === "snow") {
+        ctx.fillStyle = "rgba(236,240,246,0.85)";
+        for (const d of drops) {
+          d.y += (0.5 + d.z * 0.9) * dpr;
+          d.sway += 0.01;
+          d.x += Math.sin(d.sway) * 0.4 * dpr;
+          if (d.y > h) { d.y = -4 * dpr; d.x = Math.random() * w; }
+          ctx.beginPath();
+          ctx.arc(d.x, d.y, d.z * 1.6 * dpr, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      } else {
+        ctx.strokeStyle = heavy ? "rgba(200,214,232,0.42)" : "rgba(198,210,228,0.30)";
+        ctx.lineWidth = dpr;
+        const slant = heavy ? 2.4 : 1.4; // wind-driven diagonal
+        for (const d of drops) {
+          const speed = (heavy ? 14 : 9) * d.z * dpr;
+          d.y += speed;
+          d.x += slant * d.z * dpr;
+          if (d.y > h) { d.y = -d.len; d.x = Math.random() * w; }
+          ctx.beginPath();
+          ctx.moveTo(d.x, d.y);
+          ctx.lineTo(d.x - slant * d.z * dpr, d.y - d.len * d.z);
+          ctx.stroke();
+        }
+      }
+      raf = requestAnimationFrame(draw);
+    };
+
+    const stop = () => { cancelAnimationFrame(raf); raf = 0; ctx && ctx.clearRect(0, 0, precip.width, precip.height); };
+
+    // Apply a classified sky to the hero
+    const applyWeather = (sky, city) => {
+      // Clear skies → warm sunlight streams through the window
+      if (sunbeamEl) sunbeamEl.classList.toggle("is-active", sky === "clear");
+      // Atmospheric wash (overcast/fog) via the tint layer
+      if (sky === "overcast" || sky === "fog") {
+        weatherEl.setAttribute("data-sky", sky);
+        weatherEl.classList.add("is-active");
+      } else {
+        weatherEl.classList.remove("is-active");
+        weatherEl.removeAttribute("data-sky");
+      }
+      // Precipitation via the canvas
+      const wantsParticles = sky === "rain" || sky === "storm" || sky === "snow";
+      if (wantsParticles && !reduceMotion) {
+        mode = sky === "storm" ? "storm" : (sky === "snow" ? "snow" : "rain");
+        resize();
+        seed(mode === "snow" ? "snow" : "rain");
+        precip.classList.add("is-active");
+        if (!raf) draw();
+      } else {
+        precip.classList.remove("is-active");
+        stop();
+        // Reduced-motion or storm/overcast: still hint wet weather with the tint
+        if (wantsParticles && reduceMotion) {
+          weatherEl.setAttribute("data-sky", "overcast");
+          weatherEl.classList.add("is-active");
+        }
+      }
+    };
+
+    window.addEventListener("resize", () => {
+      if (raf) { resize(); seed(mode === "snow" ? "snow" : "rain"); }
+    });
+
+    // Fetch current conditions for a coordinate, then paint the sky
+    const loadWeather = async (lat, lon, city) => {
+      try {
+        const r = await fetch(
+          `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=weather_code,precipitation`
+        );
+        const j = await r.json();
+        const code = j?.current?.weather_code;
+        if (typeof code !== "number") return;
+        let sky = classify(code);
+        // Trust measured precipitation over the code: local showers often fall
+        // while the coarse model still reports "overcast" for the grid cell.
+        const mm = j?.current?.precipitation;
+        if (typeof mm === "number" && mm > 0 && (sky === "overcast" || sky === "clear" || sky === "fog")) {
+          sky = "rain";
+        }
+        applyWeather(sky, city);
+      } catch (e) { /* weather is an enhancement — fail silently */ }
+    };
+
+    // Step 1: silent city-level location from IP (no permission prompt)
+    const locateByIP = async () => {
+      try {
+        const r = await fetch("https://ipwho.is/?fields=latitude,longitude,city,success");
+        const j = await r.json();
+        if (j && j.success !== false && typeof j.latitude === "number") {
+          loadWeather(j.latitude, j.longitude, j.city);
+          return true;
+        }
+      } catch (e) { /* ignore */ }
+      return false;
+    };
+
+    // Step 2: upgrade to precise GPS *only* if the visitor already granted it — never prompt
+    const upgradeWithGPS = () => {
+      if (!navigator.geolocation || !navigator.permissions) return;
+      navigator.permissions.query({ name: "geolocation" }).then((p) => {
+        if (p.state === "granted") {
+          navigator.geolocation.getCurrentPosition(
+            (pos) => loadWeather(pos.coords.latitude.toFixed(3), pos.coords.longitude.toFixed(3), null),
+            () => {}, { maximumAge: 6e5, timeout: 8000 }
+          );
+        }
+      }).catch(() => {});
+    };
+
+    // Preview override: index.html?weather=rain|storm|snow|fog|overcast|clear (for demos/testing)
+    const forced = new URLSearchParams(location.search).get("weather");
+    if (forced && labelFor[forced]) {
+      applyWeather(forced, "your location");
+    } else {
+      locateByIP();
+      upgradeWithGPS();
+      // Refresh conditions every 15 min so the scene tracks the real sky
+      setInterval(locateByIP, 9e5);
+    }
+  }
+
   /* ---------- 2 · Blueprint draws itself ---------- */
   const bpStage = document.getElementById("bpStage");
   if (bpStage) {
