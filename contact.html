@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <meta name="description" content="Contact Suraj Mishra Architects — start a project, visit the studio, or send an enquiry to our team." />
+  <title>Contact — Suraj Mishra Architects</title>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <link rel="stylesheet" href="fonts.css" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="enhance.css" />
+</head>
+<body data-page="contact">
+  <div class="loader" id="loader"><div class="loader__inner"><img src="logo.png" alt="Suraj Mishra Architects" class="loader__logo" /><div class="loader__bar"><span></span></div></div></div>
+  <div class="cursor" id="cursor"></div>
+
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" data-hover aria-label="Suraj Mishra Architects home"><img src="logo.png" alt="Suraj Mishra Architects" class="nav__logo-img" /></a>
+      <nav class="nav__links" id="navLinks">
+        <a href="index.html" data-hover>Home</a>
+        <a href="work.html" data-hover>Work</a>
+        <a href="studio.html" data-hover>Studio</a>
+        <a href="services.html" data-hover>Services</a>
+        <a href="contact.html" class="is-active" data-hover>Contact</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <section class="page-hero">
+    <div class="page-hero__inner">
+      <p class="page-hero__eyebrow reveal">Get in touch</p>
+      <h1 class="page-hero__title">
+        <span class="line"><span>Let's build</span></span>
+        <span class="line"><span>something <em>enduring</em>.</span></span>
+      </h1>
+      <p class="page-hero__lead reveal">Tell us about your project and we'll respond within two working days.</p>
+    </div>
+  </section>
+
+  <!-- CONTACT LAYOUT -->
+  <section class="contact-page">
+    <div class="contact-page__grid">
+      <!-- FORM -->
+      <form class="cform reveal" id="cform" novalidate>
+        <div class="cform__row">
+          <div class="field">
+            <label for="name">Name</label>
+            <input type="text" id="name" name="name" required placeholder="Your name" />
+          </div>
+          <div class="field">
+            <label for="email">Email <span class="field__opt">(optional)</span></label>
+            <input type="email" id="email" name="email" placeholder="you@email.com" />
+          </div>
+        </div>
+        <div class="cform__row">
+          <div class="field">
+            <label for="contact">Address / contact</label>
+            <input type="text" id="contact" name="contact" placeholder="Address or phone" />
+          </div>
+          <div class="field">
+            <label for="type">Project type</label>
+            <select id="type" name="type">
+              <option>Residential</option>
+              <option>Cultural</option>
+              <option>Hospitality</option>
+              <option>Urban / Masterplan</option>
+              <option>Adaptive Reuse</option>
+              <option>Other</option>
+            </select>
+          </div>
+        </div>
+        <div class="field">
+          <label for="message">Tell us about your project</label>
+          <textarea id="message" name="message" rows="5" required placeholder="Site, ambitions, timeline…"></textarea>
+        </div>
+        <button type="submit" class="btn-submit" data-hover>
+          <span>Send enquiry</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </button>
+        <p class="cform__note" id="cformNote" hidden>Thank you — your enquiry has been received. We'll be in touch shortly.</p>
+      </form>
+
+      <!-- INFO -->
+      <aside class="contact-aside">
+        <div class="contact-aside__block reveal">
+          <span class="contact__k">Studio</span>
+          <p>Ainthapali<br/>Sambalpur, Odisha 768004<br/>India</p>
+        </div>
+        <div class="contact-aside__block reveal">
+          <span class="contact__k">Enquiries</span>
+          <p><a href="mailto:studio@surajmishraarchitects.com" data-hover>studio@surajmishraarchitects.com</a><br/><a href="tel:+916632440000" data-hover>+91 663 244 0000</a></p>
+        </div>
+        <div class="contact-aside__block reveal">
+          <span class="contact__k">Careers</span>
+          <p><a href="mailto:careers@surajmishraarchitects.com" data-hover>careers@surajmishraarchitects.com</a></p>
+        </div>
+        <div class="contact-aside__block reveal">
+          <span class="contact__k">Social</span>
+          <p><a href="#" data-hover>Instagram</a><br/><a href="#" data-hover>LinkedIn</a><br/><a href="#" data-hover>Pinterest</a></p>
+        </div>
+        <div class="contact-aside__block reveal">
+          <span class="contact__k">Hours</span>
+          <p>Monday – Saturday<br/>10:00 – 19:00 IST</p>
+        </div>
+      </aside>
+    </div>
+  </section>
+
+  <!-- MAP-LIKE IMAGE -->
+  <section class="wide-media wide-media--short reveal">
+    <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?auto=format&fit=crop&w=1920&q=80" alt="Sambalpur studio location" />
+  </section>
+
+  <footer class="footer">
+    <div class="footer__top-grid">
+      <div class="footer__col reveal"><img src="logo.png" alt="Suraj Mishra Architects" class="footer__logo" /><p class="footer__tag">Architecture of light, material and calm.</p></div>
+      <div class="footer__col reveal"><span class="footer__k">Navigate</span><a href="work.html" data-hover>Work</a><a href="studio.html" data-hover>Studio</a><a href="services.html" data-hover>Services</a><a href="contact.html" data-hover>Contact</a></div>
+      <div class="footer__col reveal"><span class="footer__k">Studio</span><p>Ainthapali<br/>Sambalpur, Odisha 768004<br/>India</p></div>
+      <div class="footer__col reveal"><span class="footer__k">Connect</span><a href="mailto:studio@surajmishraarchitects.com" data-hover>studio@surajmishraarchitects.com</a><a href="tel:+916632440000" data-hover>+91 663 244 0000</a></div>
+    </div>
+    <div class="footer__inner"><div class="footer__meta"><span>© 2026 Suraj Mishra Architects</span><span>Designed with intent · Sambalpur</span><a href="#" class="footer__top" data-hover>Back to top ↑</a></div></div>
+  </footer>
+
+  <script src="script.js"></script>
+  <script src="enhance.js"></script>
+</body>
+</html>

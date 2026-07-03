@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="icon" type="image/png" href="logo.png" />
+  <link rel="apple-touch-icon" href="logo.png" />
+  <meta name="description" content="Suraj Mishra Architects — an award-winning architecture studio crafting timeless spaces where light, material and human experience converge." />
+  <meta property="og:title" content="Suraj Mishra Architects — Architecture Studio" />
+  <meta property="og:description" content="An architecture studio crafting timeless spaces where light, material and human experience converge." />
+  <meta property="og:image" content="logo.png" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <title>Suraj Mishra Architects — Architecture Studio</title>
+  <link rel="preconnect" href="https://images.unsplash.com" crossorigin />
+  <!-- Fonts are inlined as data: URIs in fonts.css so the site works offline over file:// -->
+  <link rel="stylesheet" href="fonts.css" />
+  <link rel="preload" as="image" fetchpriority="high" href="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1920&q=80" />
+  <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="enhance.css" />
+</head>
+<body data-page="home">
+  <div class="loader" id="loader">
+    <div class="loader__inner">
+      <img src="logo.png" alt="Suraj Mishra Architects" class="loader__logo" />
+      <div class="loader__bar"><span></span></div>
+    </div>
+  </div>
+  <div class="cursor" id="cursor"></div>
+
+  <!-- NAV (shared) -->
+  <header class="nav" id="nav">
+    <div class="nav__inner">
+      <a href="index.html" class="nav__logo" data-hover aria-label="Suraj Mishra Architects home"><img src="logo.png" alt="Suraj Mishra Architects" class="nav__logo-img" /></a>
+      <nav class="nav__links" id="navLinks">
+        <a href="index.html" class="is-active" data-hover>Home</a>
+        <a href="work.html" data-hover>Work</a>
+        <a href="studio.html" data-hover>Studio</a>
+        <a href="services.html" data-hover>Services</a>
+        <a href="contact.html" data-hover>Contact</a>
+      </nav>
+      <button class="nav__toggle" id="navToggle" aria-label="Menu"><span></span><span></span></button>
+    </div>
+  </header>
+
+  <!-- HERO -->
+  <section class="hero" id="hero">
+    <div class="hero__media">
+      <img id="heroImg" src="https://images.unsplash.com/photo-1615529182904-14819c35db37?auto=format&fit=crop&w=1920&q=80" alt="Moody contemporary architectural interior in shadow" loading="eager" fetchpriority="high" decoding="async" />
+      <div class="hero__sky" id="heroSky"></div>
+      <div class="hero__sun" id="heroSun"></div>
+      <div class="hero__overlay"></div>
+    </div>
+    <div class="hero__content">
+      <p class="hero__eyebrow reveal">Architecture · Interior · Urbanism</p>
+      <h1 class="hero__title">
+        <span class="line"><span>Spaces that</span></span>
+        <span class="line"><span>hold <em>silence</em></span></span>
+        <span class="line"><span>and light.</span></span>
+      </h1>
+      <div class="hero__meta reveal">
+        <p>Suraj Mishra Architects is a studio shaping enduring environments across residential, cultural and civic realms — since 2008.</p>
+        <a href="work.html" class="btn-link" data-hover>
+          <span>View selected work</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </div>
+    </div>
+    <!-- Hero lighting follows the visitor's real time of day (no visible control) -->
+
+    <div class="hero__scroll"><span>Scroll</span><div class="hero__scroll-line"></div></div>
+  </section>
+
+  <!-- MARQUEE -->
+  <div class="marquee">
+    <div class="marquee__track">
+      <span>Residential</span><i>✳</i><span>Cultural</span><i>✳</i><span>Adaptive Reuse</span><i>✳</i>
+      <span>Hospitality</span><i>✳</i><span>Urban Design</span><i>✳</i><span>Interiors</span><i>✳</i>
+      <span>Residential</span><i>✳</i><span>Cultural</span><i>✳</i><span>Adaptive Reuse</span><i>✳</i>
+      <span>Hospitality</span><i>✳</i><span>Urban Design</span><i>✳</i><span>Interiors</span><i>✳</i>
+    </div>
+  </div>
+
+  <!-- INTRO -->
+  <section class="intro">
+    <div class="intro__grid">
+      <div class="intro__label reveal"><span class="idx">01</span><span>The Studio</span></div>
+      <div class="intro__body">
+        <p class="intro__lead reveal">
+          We believe architecture is quiet by nature — a discipline of proportion,
+          material honesty and the patient choreography of light. Every project begins
+          not with a form, but with a question about how people wish to live.
+        </p>
+        <div class="intro__cols">
+          <p class="reveal">From a masterplan to a doorhandle, we design at every scale with the same intent: to create places of clarity and calm that age with grace.</p>
+          <p class="reveal">Our practice unites architects, interior designers and craftspeople under one roof, collaborating from first sketch to final threshold.</p>
+        </div>
+        <a href="studio.html" class="btn-link reveal" data-hover style="margin-top:2.4rem;color:var(--ink)">
+          <span>More about the studio</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- STATS -->
+  <section class="stats">
+    <div class="stats__grid">
+      <div class="stat reveal"><span class="stat__num" data-count="120">0</span><span class="stat__label">Projects Realised</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="17">0</span><span class="stat__label">Years of Practice</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="34">0</span><span class="stat__label">Awards Received</span></div>
+      <div class="stat reveal"><span class="stat__num" data-count="9">0</span><span class="stat__label">Countries</span></div>
+    </div>
+  </section>
+
+  <!-- PITCH / DREAM HOME HOOK -->
+  <section class="pitch">
+    <div class="pitch__media reveal">
+      <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=78" alt="A light-filled bespoke residence" />
+      <span class="pitch__badge">Private Residences</span>
+    </div>
+    <div class="pitch__body">
+      <p class="pitch__eyebrow reveal">For those who dream in space</p>
+      <h2 class="pitch__title reveal">The home you<br/><em>picture at night</em><br/>— we make it real.</h2>
+      <p class="pitch__lead reveal">A home is the most personal thing we design. We begin with your life — how you wake, gather, retreat and entertain — and shape every wall, window and shadow around it. The result is not a house from a catalogue, but a portrait of how you wish to live.</p>
+      <ul class="pitch__list">
+        <li class="reveal"><span>✦</span> A design shaped entirely around you — never a template</li>
+        <li class="reveal"><span>✦</span> One dedicated principal from first sketch to final key</li>
+        <li class="reveal"><span>✦</span> Transparent budgets and timelines, agreed up front</li>
+        <li class="reveal"><span>✦</span> Craftsmanship you can feel in every detail</li>
+      </ul>
+      <a href="contact.html" class="btn-solid reveal" data-hover>
+        <span>Begin your dream home</span>
+        <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+      </a>
+    </div>
+  </section>
+
+  <!-- SELECTED WORK (preview) -->
+  <section class="work" id="work">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">02</span><span>Selected Work</span></div>
+      <h2 class="section-head__title reveal">A portfolio measured<br/>in light and time.</h2>
+    </div>
+    <div class="work__list">
+      <article class="project reveal">
+        <a href="work.html" class="project__inner" data-hover>
+          <div class="project__media"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=78" alt="House of Thresholds" /></div>
+          <div class="project__info">
+            <div class="project__top"><h3>House of Thresholds</h3><span class="project__year">2024</span></div>
+            <div class="project__bottom"><span>Residential · Kyoto, JP</span><span class="project__arrow">↗</span></div>
+          </div>
+        </a>
+      </article>
+      <article class="project reveal">
+        <a href="work.html" class="project__inner" data-hover>
+          <div class="project__media"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1487958449943-2429e8be8625?auto=format&fit=crop&w=1000&q=78" alt="The Concrete Chapel" /></div>
+          <div class="project__info">
+            <div class="project__top"><h3>The Concrete Chapel</h3><span class="project__year">2023</span></div>
+            <div class="project__bottom"><span>Cultural · Porto, PT</span><span class="project__arrow">↗</span></div>
+          </div>
+        </a>
+      </article>
+      <article class="project reveal">
+        <a href="work.html" class="project__inner" data-hover>
+          <div class="project__media"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1518005020951-eccb494ad742?auto=format&fit=crop&w=1000&q=78" alt="Meridian Tower" /></div>
+          <div class="project__info">
+            <div class="project__top"><h3>Meridian Tower</h3><span class="project__year">2023</span></div>
+            <div class="project__bottom"><span>Mixed-use · Singapore, SG</span><span class="project__arrow">↗</span></div>
+          </div>
+        </a>
+      </article>
+      <article class="project reveal">
+        <a href="work.html" class="project__inner" data-hover>
+          <div class="project__media"><img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1000&q=78" alt="Villa Aperta" /></div>
+          <div class="project__info">
+            <div class="project__top"><h3>Villa Aperta</h3><span class="project__year">2022</span></div>
+            <div class="project__bottom"><span>Residential · Amalfi, IT</span><span class="project__arrow">↗</span></div>
+          </div>
+        </a>
+      </article>
+    </div>
+    <div class="work__more reveal"><a href="work.html" class="btn-outline" data-hover>All Projects — 120</a></div>
+  </section>
+
+  <!-- BLUEPRINT — 2D DRAWING DRAWS ITSELF -->
+  <section class="blueprint" id="blueprint">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">◺</span><span>In Two Dimensions</span></div>
+      <h2 class="section-head__title reveal">Every home begins<br/>as a single line.</h2>
+    </div>
+    <div class="blueprint__stage reveal" id="bpStage" data-cursor="Watch">
+      <div class="blueprint__grid" aria-hidden="true"></div>
+      <svg class="blueprint__svg" viewBox="0 0 800 520" fill="none" aria-hidden="true">
+        <!-- outer walls -->
+        <path pathLength="1" d="M60 60 H740 V460 H60 Z"/>
+        <path pathLength="1" d="M76 76 H724 V444 H76 Z"/>
+        <!-- interior partitions -->
+        <path pathLength="1" d="M320 76 V300"/>
+        <path pathLength="1" d="M320 360 V444"/>
+        <path pathLength="1" d="M320 300 H520"/>
+        <path pathLength="1" d="M520 76 V444"/>
+        <path pathLength="1" d="M520 240 H724"/>
+        <!-- door swings -->
+        <path pathLength="1" d="M320 330 a30 30 0 0 1 30 30"/>
+        <path pathLength="1" d="M560 240 a40 40 0 0 1 40 40"/>
+        <!-- windows (double lines) -->
+        <path pathLength="1" d="M150 60 V76 M250 60 V76 M600 60 V76"/>
+        <path pathLength="1" d="M60 180 H76 M60 300 H76"/>
+        <!-- furniture hints -->
+        <path pathLength="1" d="M120 360 h120 v60 h-120 Z"/>
+        <path pathLength="1" d="M600 320 h90 v90 h-90 Z"/>
+        <!-- dimension line -->
+        <path pathLength="1" class="bp-dim" d="M60 492 H740 M60 486 V498 M740 486 V498"/>
+      </svg>
+      <span class="blueprint__tag blueprint__tag--tl">PLAN · GROUND FLOOR</span>
+      <span class="blueprint__tag blueprint__tag--br">18.4 M</span>
+      <img loading="lazy" decoding="async" class="blueprint__photo" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=78" alt="The finished residence" />
+    </div>
+    <p class="blueprint__cap reveal">From drafted plan to realised home — drag-free, it draws as you arrive.</p>
+  </section>
+
+  <!-- 3D — TURN IT IN YOUR HANDS -->
+  <section class="house3d-sec" id="house3d-sec">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">◈</span><span>In Three Dimensions</span></div>
+      <h2 class="section-head__title reveal">Turn the idea<br/>in your hands.</h2>
+    </div>
+    <div class="house3d reveal" id="house3d" data-cursor="Drag">
+      <canvas id="house3dCanvas"></canvas>
+      <span class="house3d__hint">Drag to orbit · scroll to zoom</span>
+      <noscript><p class="house3d__fallback">Enable JavaScript to explore the 3D model.</p></noscript>
+    </div>
+  </section>
+
+  <!-- PILLARS / WHY US -->
+  <section class="pillars">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">03</span><span>Why Suraj Mishra</span></div>
+      <h2 class="section-head__title reveal">A partnership built<br/>on trust and craft.</h2>
+    </div>
+    <div class="pillars__grid">
+      <div class="pillar reveal">
+        <span class="pillar__num">01</span>
+        <h3>Bespoke, never templated</h3>
+        <p>Every commission is designed from a blank page around your site, your budget and your way of living. No two homes we make are alike.</p>
+      </div>
+      <div class="pillar reveal">
+        <span class="pillar__num">02</span>
+        <h3>One studio, every discipline</h3>
+        <p>Architecture, interiors and landscape resolved under one roof — a single vision carried faithfully from concept to keys.</p>
+      </div>
+      <div class="pillar reveal">
+        <span class="pillar__num">03</span>
+        <h3>Honest from the first meeting</h3>
+        <p>Clear scope, transparent fees and realistic timelines agreed before we draw a line. You will always know where your project stands.</p>
+      </div>
+      <div class="pillar reveal">
+        <span class="pillar__num">04</span>
+        <h3>Built to outlast trends</h3>
+        <p>We design with enduring materials and quiet proportion, so your home grows more beautiful — and more valuable — with every passing year.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- FEATURE -->
+  <section class="feature">
+    <div class="feature__media">
+      <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1524230572899-a752b3835840?auto=format&fit=crop&w=1920&q=80" alt="Architectural stairwell" />
+      <div class="feature__overlay"></div>
+    </div>
+    <blockquote class="feature__quote reveal">
+      <p>“We do not design buildings.<br/>We design the way morning<br/>light arrives.”</p>
+      <footer>— Suraj Mishra, Founding Principal</footer>
+    </blockquote>
+  </section>
+
+  <!-- CONFIGURATOR — DESIGN YOUR DREAM HOME -->
+  <section class="config" id="config">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">✦</span><span>Design Yours</span></div>
+      <h2 class="section-head__title reveal">Shape your home<br/>in a single minute.</h2>
+    </div>
+    <div class="config__grid">
+      <div class="config__preview reveal">
+        <img loading="lazy" decoding="async" id="cfgImg" src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?auto=format&fit=crop&w=1000&q=78" alt="Live preview of your home style" />
+        <div class="config__scrim"></div>
+        <div class="config__palette" id="cfgPalette" aria-hidden="true"></div>
+        <span class="config__caption" id="cfgCaption">Minimal · Timber · Golden Hour</span>
+      </div>
+      <div class="config__controls reveal">
+        <div class="config__group" data-key="style" data-cursor="Choose">
+          <span class="config__label">01 — Style</span>
+          <div class="config__opts">
+            <button class="config__opt is-active" data-val="Minimal">Minimal</button>
+            <button class="config__opt" data-val="Warm">Warm Modern</button>
+            <button class="config__opt" data-val="Brutalist">Brutalist</button>
+          </div>
+        </div>
+        <div class="config__group" data-key="material" data-cursor="Choose">
+          <span class="config__label">02 — Material</span>
+          <div class="config__opts">
+            <button class="config__opt" data-val="Concrete">Concrete</button>
+            <button class="config__opt is-active" data-val="Timber">Timber</button>
+            <button class="config__opt" data-val="Stone">Stone</button>
+          </div>
+        </div>
+        <div class="config__group" data-key="light" data-cursor="Choose">
+          <span class="config__label">03 — Light</span>
+          <div class="config__opts">
+            <button class="config__opt" data-val="Dawn">Dawn</button>
+            <button class="config__opt is-active" data-val="Golden Hour">Golden Hour</button>
+            <button class="config__opt" data-val="Dusk">Dusk</button>
+          </div>
+        </div>
+        <a class="btn-solid" id="cfgSend" href="contact.html" data-hover>
+          <span>Send my brief</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- TESTIMONIALS -->
+  <section class="testi">
+    <div class="section-head">
+      <div class="section-head__label reveal"><span class="idx">04</span><span>In their words</span></div>
+      <h2 class="section-head__title reveal">Clients who trusted<br/>us with a lifetime.</h2>
+    </div>
+    <div class="testi__grid">
+      <figure class="testi__card reveal">
+        <span class="testi__mark">”</span>
+        <blockquote>They listened for months before they ever drew a wall. The house they gave us feels less like a building and more like a portrait of our family.</blockquote>
+        <figcaption><strong>Priya & Arjun Kapoor</strong><span>Private Residence · Delhi</span></figcaption>
+      </figure>
+      <figure class="testi__card reveal">
+        <span class="testi__mark">”</span>
+        <blockquote>Every fear I had about building — the budget, the delays, the compromises — simply never happened. It was, genuinely, a joy from start to finish.</blockquote>
+        <figcaption><strong>Eleanor Whitmore</strong><span>Villa · Cotswolds</span></figcaption>
+      </figure>
+      <figure class="testi__card reveal">
+        <span class="testi__mark">”</span>
+        <blockquote>The light in our living room at dusk stops me in my tracks every single day. Worth every conversation, every decision, every rupee.</blockquote>
+        <figcaption><strong>Rohan Mehta</strong><span>Weekend House · Lonavala</span></figcaption>
+      </figure>
+    </div>
+  </section>
+
+  <!-- CINEMATIC INVITE / CTA -->
+  <section class="invite">
+    <div class="invite__media">
+      <img loading="lazy" decoding="async" src="https://images.unsplash.com/photo-1600607687939-ce8a6c25118c?auto=format&fit=crop&w=1920&q=80" alt="A serene private residence at dusk" />
+      <div class="invite__overlay"></div>
+    </div>
+    <div class="invite__content">
+      <p class="invite__eyebrow reveal">Your story begins here</p>
+      <h2 class="invite__title reveal">Let's design the home<br/>you'll <em>never want to leave</em>.</h2>
+      <p class="invite__note reveal">We take on a limited number of private commissions each year, so that every home receives our full devotion. Tell us your vision — the first conversation is always ours to give.</p>
+      <div class="invite__actions reveal">
+        <a href="contact.html" class="btn-solid btn-solid--lg" data-hover>
+          <span>Book a private consultation</span>
+          <svg viewBox="0 0 24 24" width="16" height="16"><path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.5"/></svg>
+        </a>
+        <a href="work.html" class="btn-outline btn-outline--light" data-hover>Explore our work</a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FOOTER (shared) -->
+  <footer class="footer">
+    <div class="footer__top-grid">
+      <div class="footer__col reveal">
+        <img src="logo.png" alt="Suraj Mishra Architects" class="footer__logo" />
+        <p class="footer__tag">Architecture of light, material and calm.</p>
+      </div>
+      <div class="footer__col reveal">
+        <span class="footer__k">Navigate</span>
+        <a href="work.html" data-hover>Work</a>
+        <a href="studio.html" data-hover>Studio</a>
+        <a href="services.html" data-hover>Services</a>
+        <a href="contact.html" data-hover>Contact</a>
+      </div>
+      <div class="footer__col reveal">
+        <span class="footer__k">Studio</span>
+        <p>Ainthapali<br/>Sambalpur, Odisha 768004<br/>India</p>
+      </div>
+      <div class="footer__col reveal">
+        <span class="footer__k">Connect</span>
+        <a href="mailto:studio@surajmishraarchitects.com" data-hover>studio@surajmishraarchitects.com</a>
+        <a href="tel:+916632440000" data-hover>+91 663 244 0000</a>
+      </div>
+    </div>
+    <div class="footer__inner">
+      <div class="footer__meta">
+        <span>© 2026 Suraj Mishra Architects</span>
+        <span>Designed with intent · Sambalpur</span>
+        <a href="#" class="footer__top" data-hover>Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <!-- Three.js is lazy-loaded from script.js only when the 3D section nears view -->
+  <script src="script.js"></script>
+  <script src="enhance.js"></script>
+</body>
+</html>
