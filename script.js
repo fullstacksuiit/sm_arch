@@ -1,9 +1,31 @@
 /* ============================================
-   SURAJ MISHRA ARCHITECTS — interactions
+   STRIX VENTURE — interactions
    ============================================ */
 
 (function () {
   "use strict";
+
+  /* ---------- Lenis smooth scroll ----------
+     Weighted, momentum scrolling. Lenis still scrolls the real page, so all the
+     window.scrollY / "scroll" listeners below keep working unchanged. We drive it
+     off the shared rAF loop and skip it entirely for reduced-motion users. */
+  const prefersReducedMotion = window.matchMedia(
+    "(prefers-reduced-motion: reduce)"
+  ).matches;
+  if (window.Lenis && !prefersReducedMotion) {
+    const lenis = new Lenis({
+      lerp: 0.1,          // lower = smoother/heavier glide
+      wheelMultiplier: 1,
+      smoothWheel: true,
+      syncTouch: false,   // leave touch devices on native scroll (feels better on mobile)
+    });
+    window.lenis = lenis; // exposed so anchor links can use lenis.scrollTo(target)
+    const raf = (time) => {
+      lenis.raf(time);
+      requestAnimationFrame(raf);
+    };
+    requestAnimationFrame(raf);
+  }
 
   /* ---------- Loader ---------- */
   const loader = document.getElementById("loader");
@@ -47,8 +69,7 @@
   const navContact = document.createElement("div");
   navContact.className = "nav__contact";
   navContact.innerHTML =
-    '<a href="mailto:studio@surajmishraarchitects.com">studio@surajmishraarchitects.com</a>' +
-    '<a href="tel:+916632440000">+91 663 244 0000</a>';
+    '<a href="mailto:hello@strixventure.com">hello@strixventure.com</a>';
   links.appendChild(navContact);
   toggle.addEventListener("click", () => setMenu(!links.classList.contains("open")));
   links.querySelectorAll("a").forEach((a) =>
@@ -76,7 +97,24 @@
     },
     { threshold: 0.14, rootMargin: "0px 0px -8% 0px" }
   );
-  revealEls.forEach((el) => io.observe(el));
+  /* Stagger: items sharing a parent cascade in one after another instead of
+     all landing at once. Delay is baked per-element via a CSS var, capped so a
+     long grid's last item doesn't crawl in seconds late. */
+  const STAGGER_MS = 70; // gap between siblings in a group
+  const STAGGER_CAP = 6; // max steps of delay (≈420ms)
+  revealEls.forEach((el) => {
+    const group = el.parentElement
+      ? Array.from(el.parentElement.querySelectorAll(":scope > .reveal"))
+      : [el];
+    const idx = group.indexOf(el);
+    if (idx > 0) {
+      el.style.setProperty(
+        "--reveal-delay",
+        `${Math.min(idx, STAGGER_CAP) * STAGGER_MS}ms`
+      );
+    }
+    io.observe(el);
+  });
 
   /* ---------- Animated counters ---------- */
   const counters = document.querySelectorAll(".stat__num");
@@ -132,17 +170,16 @@
   /* ---------- Contact form ---------- */
   const cform = document.getElementById("cform");
   if (cform) {
-    // Prefill from the dream-home configurator (contact.html?style=…&material=…&light=…)
+    // Prefill the project type from a deep link (contact.html?type=SaaS%20Platform)
     const params = new URLSearchParams(window.location.search);
-    if (params.has("style") || params.has("material") || params.has("light")) {
-      const style = params.get("style") || "";
-      const material = params.get("material") || "";
-      const light = params.get("light") || "";
+    const wantType = params.get("type");
+    if (wantType) {
       const typeSel = document.getElementById("type");
-      if (typeSel) typeSel.value = "Residential";
-      const msg = document.getElementById("message");
-      if (msg && !msg.value) {
-        msg.value = `I'd love to explore a home in a ${style} style, using ${material}, designed around ${light} light. Here is a little more about my site and ambitions:\n\n`;
+      if (typeSel) {
+        const match = Array.from(typeSel.options).find(
+          (o) => o.value.toLowerCase() === wantType.toLowerCase()
+        );
+        if (match) typeSel.value = match.value;
       }
     }
     cform.addEventListener("submit", (e) => {
@@ -495,14 +532,21 @@
   if (canvas && wrap) {
     const build3D = () => {
     if (typeof THREE === "undefined") return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     const scene = new THREE.Scene();
-    scene.fog = new THREE.Fog(0x0a0906, 16, 40);
+    scene.fog = new THREE.Fog(0x0a0806, 22, 62);
 
-    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true, powerPreference: "high-performance" });
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    if ("outputEncoding" in renderer) renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ACESFilmicToneMapping;
+    renderer.toneMappingExposure = 1.08;
 
-    const camera = new THREE.PerspectiveCamera(38, 1.6, 0.1, 100);
-    camera.position.set(9, 6.5, 11);
+    const camera = new THREE.PerspectiveCamera(34, 1.6, 0.1, 200);
+    camera.position.set(15, 9, 17);
 
     const resize = () => {
       const w = wrap.clientWidth, h = wrap.clientHeight;
@@ -512,57 +556,183 @@
       camera.updateProjectionMatrix();
     };
 
-    // Lighting — warm key + gold rim
-    scene.add(new THREE.HemisphereLight(0xffe9c8, 0x0a0906, 0.55));
-    const key = new THREE.DirectionalLight(0xffdca0, 1.15);
-    key.position.set(8, 13, 6);
+    /* ---- Procedural dusk environment (PMREM) → real reflections on glass & steel ---- */
+    (() => {
+      const c = document.createElement("canvas");
+      c.width = 512; c.height = 256;
+      const g = c.getContext("2d");
+      const sky = g.createLinearGradient(0, 0, 0, 256);
+      sky.addColorStop(0.00, "#0d0a06");
+      sky.addColorStop(0.42, "#2c210f");
+      sky.addColorStop(0.55, "#7a5822");
+      sky.addColorStop(0.60, "#a8792f");
+      sky.addColorStop(0.64, "#20180e");
+      sky.addColorStop(1.00, "#040302");
+      g.fillStyle = sky; g.fillRect(0, 0, 512, 256);
+      const sun = g.createRadialGradient(360, 150, 4, 360, 150, 150);
+      sun.addColorStop(0, "rgba(255,206,138,0.95)");
+      sun.addColorStop(1, "rgba(255,206,138,0)");
+      g.fillStyle = sun; g.fillRect(0, 0, 512, 256);
+      const tex = new THREE.CanvasTexture(c);
+      tex.mapping = THREE.EquirectangularReflectionMapping;
+      try {
+        const pmrem = new THREE.PMREMGenerator(renderer);
+        pmrem.compileEquirectangularShader();
+        scene.environment = pmrem.fromEquirectangular(tex).texture;
+        pmrem.dispose();
+      } catch (e) { /* fall back to lights only */ }
+      tex.dispose();
+    })();
+
+    /* ---- Lighting — cinematic dusk ---- */
+    scene.add(new THREE.HemisphereLight(0xffe6c0, 0x0a0806, 0.45));
+    const key = new THREE.DirectionalLight(0xffd7a0, 2.4);
+    key.position.set(12, 18, 9);
+    key.castShadow = true;
+    key.shadow.mapSize.set(2048, 2048);
+    key.shadow.bias = -0.0004;
+    key.shadow.radius = 5;
+    const sc = key.shadow.camera;
+    sc.near = 1; sc.far = 60; sc.left = -18; sc.right = 18; sc.top = 18; sc.bottom = -18;
     scene.add(key);
-    const rim = new THREE.DirectionalLight(0xc8a15a, 0.5);
-    rim.position.set(-8, 4, -7);
+    const fill = new THREE.DirectionalLight(0x6a7ea8, 0.5);
+    fill.position.set(-12, 7, -9);
+    scene.add(fill);
+    const rim = new THREE.DirectionalLight(0xffb058, 0.7);
+    rim.position.set(-6, 5, -12);
     scene.add(rim);
 
-    // Materials
-    const wallMat = new THREE.MeshStandardMaterial({ color: 0x1c1a17, roughness: 0.9, metalness: 0.1 });
-    const wall2Mat = new THREE.MeshStandardMaterial({ color: 0x25211b, roughness: 0.8 });
-    const slabMat = new THREE.MeshStandardMaterial({ color: 0x2a2620, roughness: 0.7 });
-    const glassMat = new THREE.MeshStandardMaterial({ color: 0xe6cf9c, emissive: 0xc8a15a, emissiveIntensity: 0.85, roughness: 0.3 });
+    /* ---- Materials ---- */
+    const EI = 0.9;
+    const concrete   = new THREE.MeshStandardMaterial({ color: 0x2b2721, roughness: 0.82, metalness: 0.02, envMapIntensity: EI });
+    const concreteHi = new THREE.MeshStandardMaterial({ color: 0x38322a, roughness: 0.68, metalness: 0.03, envMapIntensity: EI });
+    const slabMat    = new THREE.MeshStandardMaterial({ color: 0x413a31, roughness: 0.55, metalness: 0.06, envMapIntensity: EI });
+    const steel      = new THREE.MeshStandardMaterial({ color: 0x0e0d0c, roughness: 0.32, metalness: 0.95, envMapIntensity: 1.1 });
+    const wood       = new THREE.MeshStandardMaterial({ color: 0x5c3f24, roughness: 0.5,  metalness: 0.0,  envMapIntensity: EI });
+    const glass      = new THREE.MeshStandardMaterial({ color: 0x0a0f14, roughness: 0.04, metalness: 0.1, transparent: true, opacity: 0.32, envMapIntensity: 1.6 });
+    const interior   = new THREE.MeshStandardMaterial({ color: 0xffdca6, emissive: 0xffb45a, emissiveIntensity: 1.35, roughness: 0.85 });
+    const water      = new THREE.MeshStandardMaterial({ color: 0x060a0d, roughness: 0.03, metalness: 0.35, envMapIntensity: 1.9 });
+    const foliage    = new THREE.MeshStandardMaterial({ color: 0x2c3320, roughness: 0.9, metalness: 0.0, envMapIntensity: 0.5, flatShading: true });
 
-    const house = new THREE.Group();
-    const box = (w, h, d, mat, x, y, z) => {
-      const m = new THREE.Mesh(new THREE.BoxGeometry(w, h, d), mat);
+    const villa = new THREE.Group();
+    const B = (w, h, d) => new THREE.BoxGeometry(w, h, d);
+    const put = (geo, mat, x, y, z, cast = true, receive = true) => {
+      const m = new THREE.Mesh(geo, mat);
       m.position.set(x, y, z);
-      house.add(m);
+      m.castShadow = cast; m.receiveShadow = receive;
+      villa.add(m);
+      return m;
     };
-    // ground disc
-    const ground = new THREE.Mesh(new THREE.CircleGeometry(9, 48), new THREE.MeshStandardMaterial({ color: 0x100e0b, roughness: 1 }));
-    ground.rotation.x = -Math.PI / 2;
-    house.add(ground);
-    // volumes
-    box(7, 0.25, 6, slabMat, 0, 0.12, 0);      // ground slab / plinth
-    box(6, 3, 5, wallMat, 0, 1.6, 0);          // main volume
-    box(6.6, 0.22, 5.6, slabMat, 0, 3.15, 0);  // roof slab over main
-    box(4.5, 2.4, 4, wall2Mat, 1.2, 4.35, -0.4); // cantilevered upper volume
-    box(5.1, 0.2, 4.4, slabMat, 1.2, 5.65, -0.4); // upper roof
-    // glazing (emissive gold)
-    box(6.02, 1.15, 0.08, glassMat, 0, 1.7, 2.52);
-    box(0.08, 1.5, 4.02, glassMat, -3.02, 1.8, 0);
-    box(4.52, 1.0, 0.08, glassMat, 1.2, 4.45, 1.62);
-    // slender columns
-    box(0.16, 3.1, 0.16, slabMat, -3.25, 1.55, 2.3);
-    box(0.16, 3.1, 0.16, slabMat, 3.25, 1.55, 2.3);
-    scene.add(house);
 
+    /* ground */
+    const ground = new THREE.Mesh(new THREE.CircleGeometry(60, 64),
+      new THREE.MeshStandardMaterial({ color: 0x0c0a08, roughness: 0.92, metalness: 0.08, envMapIntensity: 0.4 }));
+    ground.rotation.x = -Math.PI / 2;
+    ground.receiveShadow = true;
+    villa.add(ground);
+
+    /* terrace deck / plinth */
+    put(B(13, 0.5, 9), concreteHi, 0, 0.25, 0);
+    put(B(11.4, 0.08, 7.6), wood, 0, 0.52, 0.4);           // timber deck top
+    // floating entry steps
+    put(B(3.2, 0.16, 1.1), wood, 0, 0.36, 5.2);
+    put(B(3.2, 0.16, 1.1), wood, 0, 0.20, 6.1);
+
+    /* ---- Lower level: glass pavilion with lit interior ---- */
+    put(B(6.4, 0.16, 5.4), slabMat, 0, 0.6, 0);            // floor slab
+    put(B(6, 3, 0.16), concrete, 0, 2.1, -2.5);            // back wall
+    put(B(0.16, 3, 5), concrete, -3, 2.1, 0);              // left wall
+    put(B(5.4, 2.3, 0.06), interior, 0, 1.9, -2.4, false); // glowing interior backdrop
+    put(B(0.06, 2.3, 4.4), interior, -2.9, 1.9, 0, false); // side glow
+    put(B(6.8, 0.34, 5.8), slabMat, 0, 3.75, 0);           // ceiling / cantilever floor
+    // full-height glazing (front + right, real transparent glass)
+    put(B(6, 3, 0.05), glass, 0, 2.1, 2.55, false);
+    put(B(0.05, 3, 5), glass, 3, 2.1, 0, false);
+
+    /* ---- Upper cantilevered volume (solid, ribbon window) ---- */
+    const ux = 1.6, uz = -0.5;
+    put(B(5.2, 2.6, 4.2), concrete, ux, 5.25, uz);
+    put(B(4.6, 0.85, 0.06), interior, ux, 5.15, uz + 2.13, false); // ribbon glow
+    put(B(4.7, 0.95, 0.05), glass, ux, 5.15, uz + 2.16, false);    // ribbon glass
+    put(B(0.05, 0.95, 3.4), glass, ux + 2.63, 5.15, uz, false);
+    put(B(5.9, 0.24, 4.9), slabMat, ux, 6.68, uz);          // roof slab
+
+    /* slender steel columns carrying the deck canopy */
+    [[-3.15, 2.35], [3.15, 2.35], [-3.15, -2.35], [3.15, -2.35]].forEach(([x, z]) => {
+      put(B(0.13, 3.2, 0.13), steel, x, 2.15, z);
+    });
+
+    /* ---- Reflective infinity pool beside the deck ---- */
+    put(B(6.4, 0.4, 3.6), concrete, -8.2, 0.2, 1.2);       // pool shell
+    put(B(6.0, 0.05, 3.2), water, -8.2, 0.42, 1.2, false, true);
+
+    /* ---- Low-poly landscaping ---- */
+    const tree = (x, z, s) => {
+      const t = new THREE.Group();
+      const trunk = new THREE.Mesh(new THREE.CylinderGeometry(0.06 * s, 0.09 * s, 1.1 * s, 6), wood);
+      trunk.position.y = 0.55 * s; trunk.castShadow = true;
+      const crown = new THREE.Mesh(new THREE.IcosahedronGeometry(0.7 * s, 0), foliage);
+      crown.position.y = 1.5 * s; crown.castShadow = true;
+      crown.scale.y = 1.25;
+      t.add(trunk, crown);
+      t.position.set(x, 0.5, z);
+      villa.add(t);
+    };
+    tree(6.4, 3.6, 1.15);
+    tree(7.4, -2.2, 0.9);
+    tree(-4.6, -4.2, 1.0);
+    put(B(2.2, 0.5, 1.0), concreteHi, 5.6, 0.75, 3.4);      // planter
+
+    /* ---- Warm interior + landscape point lights ---- */
+    const addGlow = (x, y, z, color, intensity, dist) => {
+      const l = new THREE.PointLight(color, intensity, dist, 2);
+      l.position.set(x, y, z);
+      scene.add(l);
+    };
+    addGlow(0, 2.0, 0, 0xffb45a, 12, 11);        // lower interior
+    addGlow(ux, 5.1, uz, 0xffb864, 8, 9);         // upper interior
+    addGlow(-8.2, 1.2, 1.2, 0xffc98a, 4, 8);      // pool wash
+    // little landscape path lights (emissive beads)
+    const bead = new THREE.MeshStandardMaterial({ color: 0xffe4b0, emissive: 0xffcaa0, emissiveIntensity: 2.2, roughness: 0.6 });
+    [[1.4, 6.6], [-1.4, 6.6], [2.2, 5.0], [-2.2, 5.0]].forEach(([x, z]) => {
+      const s2 = new THREE.Mesh(new THREE.SphereGeometry(0.09, 10, 10), bead);
+      s2.position.set(x, 0.62, z); villa.add(s2);
+    });
+
+    scene.add(villa);
+
+    /* ---- Drifting dust motes ---- */
+    const MOTES = reduce ? 0 : 150;
+    let motes = null, moteVel = null;
+    if (MOTES) {
+      const pos = new Float32Array(MOTES * 3);
+      moteVel = new Float32Array(MOTES);
+      for (let i = 0; i < MOTES; i++) {
+        pos[i * 3] = (i / MOTES - 0.5) * 34 + Math.sin(i * 12.9) * 6;
+        pos[i * 3 + 1] = ((i * 7.3) % 10) + 0.5;
+        pos[i * 3 + 2] = Math.cos(i * 4.7) * 11 + Math.sin(i * 3.1) * 5;
+        moteVel[i] = 0.12 + ((i * 0.017) % 0.2);
+      }
+      const geo = new THREE.BufferGeometry();
+      geo.setAttribute("position", new THREE.BufferAttribute(pos, 3));
+      motes = new THREE.Points(geo, new THREE.PointsMaterial({
+        color: 0xffcf94, size: 0.07, transparent: true, opacity: 0.55,
+        blending: THREE.AdditiveBlending, depthWrite: false, sizeAttenuation: true,
+      }));
+      scene.add(motes);
+    }
+
+    /* ---- Controls ---- */
     const controls = new THREE.OrbitControls(camera, renderer.domElement);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.08;
-    controls.minDistance = 8;
-    controls.maxDistance = 22;
-    controls.maxPolarAngle = Math.PI / 2 - 0.04;
+    controls.dampingFactor = 0.07;
+    controls.minDistance = 9;
+    controls.maxDistance = 34;
+    controls.maxPolarAngle = Math.PI / 2 - 0.03;
     controls.enablePan = false;
-    controls.target.set(0, 2, 0);
-    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    controls.target.set(-0.4, 2.6, 0);
     controls.autoRotate = !reduce;
-    controls.autoRotateSpeed = 0.8;
+    controls.autoRotateSpeed = 0.55;
 
     resize();
     window.addEventListener("resize", resize);
@@ -571,9 +741,36 @@
     let onScreen = true;
     new IntersectionObserver((es) => { onScreen = es[0].isIntersecting; }, { threshold: 0.02 }).observe(wrap);
 
+    /* ---- Intro dolly + render loop ---- */
+    const clock = new THREE.Clock();
+    let t0 = 0;
+    const easeOut = (x) => 1 - Math.pow(1 - x, 3);
+
     const loop = () => {
       requestAnimationFrame(loop);
       if (!onScreen) return;
+      const dt = Math.min(clock.getDelta(), 0.05);
+      t0 += dt;
+
+      if (!reduce && t0 < 2.6) {
+        const p = easeOut(t0 / 2.6);
+        const dist = 26 - 8 * p;
+        const ang = 0.72 + 0.12 * (1 - p);
+        controls.target.y = 1.4 + 1.2 * p;
+        camera.position.set(Math.cos(ang) * dist * 0.62, 5 + 5 * p, Math.sin(ang) * dist);
+      }
+
+      if (motes) {
+        const a = motes.geometry.attributes.position;
+        for (let i = 0; i < MOTES; i++) {
+          let y = a.array[i * 3 + 1] + moteVel[i] * dt;
+          if (y > 11) y = 0.4;
+          a.array[i * 3 + 1] = y;
+        }
+        a.needsUpdate = true;
+        motes.rotation.y += dt * 0.02;
+      }
+
       controls.update();
       renderer.render(scene, camera);
     };

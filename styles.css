@@ -1,6 +1,6 @@
 /* ============================================
-   SURAJ MISHRA ARCHITECTS — Luxury Studio
-   Black + gold aesthetic
+   STRIX VENTURE — Product & Software Studio
+   Warm black + gold aesthetic
    ============================================ */
 
 :root {
@@ -28,6 +28,14 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
+
+/* ---------- Lenis smooth scroll ---------- */
+/* When Lenis is active it drives scroll itself, so native smooth must yield. */
+html.lenis, html.lenis body { height: auto; }
+.lenis.lenis-smooth { scroll-behavior: auto !important; }
+.lenis.lenis-smooth [data-lenis-prevent] { overscroll-behavior: contain; }
+.lenis.lenis-stopped { overflow: hidden; }
+.lenis.lenis-smooth iframe { pointer-events: none; }
 
 body {
   background: var(--bg);
@@ -163,7 +171,10 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   padding: clamp(7rem, 16vh, 9rem) var(--gutter) clamp(2.5rem, 6vh, 5rem);
   overflow: hidden;
 }
-.hero__media { position: absolute; inset: 0; z-index: -1; }
+/* isolation:isolate contains the child mix-blend-mode layers to this element,
+   so they compose only against the hero image and can never leak above the
+   content (an iOS/mobile Safari blend + negative-z-index bug). */
+.hero__media { position: absolute; inset: 0; z-index: -1; isolation: isolate; }
 .hero__media img { transform: scale(1.15); transition: transform 2s var(--ease); filter: grayscale(0.35) brightness(0.72); }
 .loaded .hero__media img { transform: scale(1); }
 .hero__overlay {
@@ -172,7 +183,11 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
     linear-gradient(to bottom, rgba(6,5,4,0.55) 0%, rgba(6,5,4,0.25) 42%, rgba(6,5,4,0.85) 100%),
     radial-gradient(120% 80% at 50% 120%, rgba(200,161,90,0.14), transparent 60%);
 }
-.hero__content { color: var(--ink); max-width: 1100px; }
+/* Own stacking context above the media layers. The effect layers (sky, sun,
+   weather, sunbeam) use mix-blend-mode; on iOS/mobile Safari a blended element
+   inside a negative-z-index parent can composite *above* static siblings and
+   cover the text. An explicit positive z-index here keeps content on top. */
+.hero__content { position: relative; z-index: 2; color: var(--ink); max-width: 1100px; }
 .hero__eyebrow {
   font-size: 0.8rem; letter-spacing: 0.28em; text-transform: uppercase;
   font-weight: 400; margin-bottom: 1.6rem; color: var(--gold);
@@ -183,7 +198,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   letter-spacing: -0.01em; margin-bottom: 2.6rem;
 }
 .hero__title em {
-  font-family: var(--f-script); font-style: italic; font-weight: 500;
+  font-family: var(--f-script); font-style: normal; font-weight: 500;
   background: var(--gold-grad);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -232,7 +247,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   border-top: 1px solid var(--line); border-bottom: 1px solid var(--line);
 }
 .marquee__track { display: inline-flex; align-items: center; gap: 2.4rem; animation: marquee 32s linear infinite; }
-.marquee__track span { font-family: var(--f-script); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 500; font-style: italic; }
+.marquee__track span { font-family: var(--f-script); font-size: clamp(1.5rem, 3vw, 2.5rem); font-weight: 500; font-style: normal; }
 .marquee__track i { font-style: normal; opacity: 0.5; font-size: 0.9rem; }
 @keyframes marquee { to { transform: translateX(-50%); } }
 
@@ -271,7 +286,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 .work--full { padding-top: clamp(2rem, 5vh, 4rem); }
 .work__list { display: grid; grid-template-columns: 1fr 1fr; gap: clamp(1.5rem, 4vw, 3.5rem); padding: 0 var(--gutter); }
 .project__inner { display: block; }
-.project__media { position: relative; overflow: hidden; aspect-ratio: 4/5; background: var(--surface); }
+.project__media { position: relative; overflow: hidden; aspect-ratio: 16/10; background: var(--surface); }
 /* WebGL liquid-ripple overlay (fades in on hover, sits over the photo) */
 .ripple-canvas {
   position: absolute; inset: 0; width: 100%; height: 100%;
@@ -279,8 +294,8 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   pointer-events: none; z-index: 1;
 }
 .project:nth-child(even) { margin-top: clamp(0rem, 8vw, 6rem); }
-.project__media img { transform: scale(1.05); transition: transform 1.2s var(--ease); filter: grayscale(0.55) brightness(0.85); }
-.project__inner:hover .project__media img { transform: scale(1); filter: grayscale(0) brightness(1); }
+.project__media img { transform: scale(1.05); transition: transform 1.2s var(--ease); filter: brightness(0.9); }
+.project__inner:hover .project__media img { transform: scale(1); filter: brightness(1); }
 .project__info { padding-top: 1.4rem; }
 .project__top { display: flex; align-items: baseline; justify-content: space-between; border-bottom: 1px solid var(--line); padding-bottom: 0.8rem; }
 .project__top h3 { font-family: var(--f-serif); font-weight: 400; font-size: clamp(1.4rem, 3vw, 2.1rem); color: var(--ink); }
@@ -289,7 +304,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 .project__arrow { font-size: 1.1rem; color: var(--gold); transition: transform .4s var(--ease); }
 .project__inner:hover .project__arrow { transform: translate(4px, -4px); }
 .work__more { display: flex; justify-content: center; margin-top: clamp(3rem, 7vh, 5rem); }
-.work__empty { display: none; text-align: center; color: var(--ink-soft); padding: 4rem var(--gutter); font-family: var(--f-script); font-style: italic; font-size: 1.5rem; }
+.work__empty { display: none; text-align: center; color: var(--ink-soft); padding: 4rem var(--gutter); font-family: var(--f-script); font-style: normal; font-size: 1.5rem; }
 .work__empty.show { display: block; }
 
 .btn-outline {
@@ -308,7 +323,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 .feature__media img { filter: grayscale(0.4) brightness(0.7); }
 .feature__overlay { position: absolute; inset: 0; background: linear-gradient(to bottom, rgba(6,5,4,0.55), rgba(6,5,4,0.7)); }
 .feature__quote { text-align: center; color: var(--ink); padding: 0 var(--gutter); }
-.feature__quote p { font-family: var(--f-script); font-weight: 500; font-style: italic; font-size: clamp(1.8rem, 5vw, 4rem); line-height: 1.15; }
+.feature__quote p { font-family: var(--f-script); font-weight: 500; font-style: normal; font-size: clamp(1.8rem, 5vw, 4rem); line-height: 1.15; }
 .feature__quote footer { margin-top: 2rem; font-family: var(--f-sans); font-size: 0.82rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); }
 
 /* ---------- Services ---------- */
@@ -330,7 +345,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   margin-bottom: 2rem;
 }
 .page-hero__title em {
-  font-family: var(--f-script); font-style: italic; font-weight: 500;
+  font-family: var(--f-script); font-style: normal; font-weight: 500;
   background: var(--gold-grad);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -439,7 +454,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   line-height: 1.04; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.8rem;
 }
 .pitch__title em {
-  font-family: var(--f-script); font-style: italic; font-weight: 500;
+  font-family: var(--f-script); font-style: normal; font-weight: 500;
   background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pitch__lead { color: var(--ink-soft); font-weight: 300; font-size: 1.05rem; max-width: 48ch; margin-bottom: 2rem; }
@@ -470,7 +485,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 }
 .testi__card:hover { transform: translateY(-6px); border-color: var(--gold); }
 .testi__mark { font-family: var(--f-serif); font-size: 4rem; line-height: 0.5; color: var(--gold); opacity: 0.5; height: 1.2rem; }
-.testi__card blockquote { font-family: var(--f-script); font-style: italic; font-weight: 500; font-size: clamp(1.2rem, 1.6vw, 1.45rem); line-height: 1.4; color: var(--ink); }
+.testi__card blockquote { font-family: var(--f-script); font-style: normal; font-weight: 500; font-size: clamp(1.2rem, 1.6vw, 1.45rem); line-height: 1.4; color: var(--ink); }
 .testi__card figcaption { margin-top: auto; padding-top: 1rem; border-top: 1px solid var(--line); display: flex; flex-direction: column; gap: 0.25rem; }
 .testi__card figcaption strong { font-weight: 500; font-size: 0.95rem; color: var(--ink); }
 .testi__card figcaption span { font-size: 0.78rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gold); }
@@ -492,7 +507,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   line-height: 1.02; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.8rem;
 }
 .invite__title em {
-  font-family: var(--f-script); font-style: italic; font-weight: 500;
+  font-family: var(--f-script); font-style: normal; font-weight: 500;
   background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .invite__note { color: var(--ink-soft); font-weight: 300; font-size: 1.05rem; max-width: 52ch; margin-bottom: 2.6rem; }
@@ -590,7 +605,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
 }
 
 /* ---------- Reveal animation ---------- */
-.reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); }
+.reveal { opacity: 0; transform: translateY(28px); transition: opacity 1s var(--ease), transform 1s var(--ease); transition-delay: var(--reveal-delay, 0ms); }
 .reveal.in { opacity: 1; transform: none; }
 
 /* ---------- Responsive ---------- */
@@ -1007,3 +1022,40 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   .js-tilt { transform: none !important; transition: none; }
   .js-tilt::after { display: none; }
 }
+
+/* ============================================
+   CASE STUDY — software portfolio gallery
+   ============================================ */
+.case { padding: clamp(3rem, 8vh, 6rem) var(--gutter) 0; }
+.case--gallery { padding-top: clamp(2.5rem, 6vh, 4.5rem); padding-bottom: 0; }
+.case__intro { max-width: 1100px; margin: clamp(1.5rem, 4vh, 3rem) auto 0; }
+.case__lead {
+  max-width: 62ch; color: var(--ink-soft);
+  font-weight: 300; font-size: clamp(1.05rem, 1.4vw, 1.25rem); line-height: 1.7;
+}
+.stack { display: flex; flex-wrap: wrap; gap: 0.6rem; margin-top: 1.8rem; padding: 0; }
+.stack li {
+  list-style: none; font-size: 0.78rem; letter-spacing: 0.05em;
+  padding: 0.45rem 0.95rem; border: 1px solid var(--line);
+  border-radius: 999px; color: var(--ink-soft); background: var(--surface);
+}
+.shots {
+  display: grid; grid-template-columns: repeat(2, 1fr);
+  gap: clamp(1rem, 2vw, 1.6rem); max-width: 1400px; margin: 0 auto;
+}
+.shot {
+  grid-column: 1 / -1; margin: 0; overflow: hidden;
+  border: 1px solid var(--line); background: var(--surface);
+  transition: border-color .4s var(--ease);
+}
+.shot:hover { border-color: rgba(200, 161, 90, 0.4); }
+.shot img { width: 100%; height: auto; display: block; }
+.shot figcaption {
+  display: flex; justify-content: space-between; align-items: baseline;
+  gap: 1rem; flex-wrap: wrap;
+  padding: 1rem 1.3rem; border-top: 1px solid var(--line);
+  font-size: 0.85rem; color: var(--ink-soft);
+}
+.shot figcaption b { color: var(--ink); font-weight: 500; letter-spacing: 0.01em; }
+.shot--half { grid-column: span 1; }
+@media (max-width: 760px) { .shot--half { grid-column: 1 / -1; } }
