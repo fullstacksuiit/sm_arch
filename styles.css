@@ -26,6 +26,7 @@
 }
 
 * { margin: 0; padding: 0; box-sizing: border-box; }
+em, i, cite, dfn, address, var, blockquote, q { font-style: normal; }
 
 html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
 
@@ -198,7 +199,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   letter-spacing: -0.01em; margin-bottom: 2.6rem;
 }
 .hero__title em {
-  font-family: var(--f-script); font-style: normal; font-weight: 500;
+  font-family: inherit; font-style: normal; font-weight: inherit;
   background: var(--gold-grad);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
