@@ -346,7 +346,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   margin-bottom: 2rem;
 }
 .page-hero__title em {
-  font-family: var(--f-script); font-style: normal; font-weight: 500;
+  font-family: inherit; font-style: normal; font-weight: inherit;
   background: var(--gold-grad);
   -webkit-background-clip: text; background-clip: text; color: transparent;
 }
@@ -455,7 +455,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   line-height: 1.04; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.8rem;
 }
 .pitch__title em {
-  font-family: var(--f-script); font-style: normal; font-weight: 500;
+  font-family: inherit; font-style: normal; font-weight: inherit;
   background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .pitch__lead { color: var(--ink-soft); font-weight: 300; font-size: 1.05rem; max-width: 48ch; margin-bottom: 2rem; }
@@ -508,7 +508,7 @@ h1, h2, h3, p, a, blockquote, li { overflow-wrap: break-word; }
   line-height: 1.02; letter-spacing: -0.01em; color: var(--ink); margin-bottom: 1.8rem;
 }
 .invite__title em {
-  font-family: var(--f-script); font-style: normal; font-weight: 500;
+  font-family: inherit; font-style: normal; font-weight: inherit;
   background: var(--gold-grad); -webkit-background-clip: text; background-clip: text; color: transparent;
 }
 .invite__note { color: var(--ink-soft); font-weight: 300; font-size: 1.05rem; max-width: 52ch; margin-bottom: 2.6rem; }
