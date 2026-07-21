@@ -1,5 +1,5 @@
 /* ============================================
-   STRIX VENTURE — interactions
+   Suraj Mishra Architects — interactions
    ============================================ */
 
 (function () {
@@ -69,7 +69,7 @@
   const navContact = document.createElement("div");
   navContact.className = "nav__contact";
   navContact.innerHTML =
-    '<a href="mailto:hello@strixventure.com">hello@strixventure.com</a>';
+    '<a href="mailto:surajlev@gmail.com">surajlev@gmail.com</a>';
   links.appendChild(navContact);
   toggle.addEventListener("click", () => setMenu(!links.classList.contains("open")));
   links.querySelectorAll("a").forEach((a) =>
